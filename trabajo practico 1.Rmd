@@ -6,6 +6,13 @@ output: html_document
 ---
 
 ```{r}
+library(usethis)
+use_git_config(user.name = "Juan-arg", user.email = "arq.juanvargas.mas@gmail.com")
+```
+
+
+
+```{r}
 library(tidyverse)
 ```
 
@@ -20,4 +27,20 @@ dataalquiler <- ("airbnb_CABA_07_2017.csv")
 ```{r}
 names(dataalquiler)
 ```
+
+```{r}
+summary(dataalquiler)
+```
+
+
+#Para conocer las posibles categorías e un factor, utilizamos la función levels, que muestra estos nieveles. Por ejemplo: ROOM TYPE
+
+
+```{r}
+levels(dataalquiler$room_type)
+```
+
+#El dataset, las variables TIPO DE CUARTO puede ser: Carto o casa completa, Cuarto Privado o Cuarto Compartido
+    
+
 
