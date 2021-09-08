@@ -16,6 +16,7 @@ use_git_config(user.name = "Juan-arg", user.email = "arq.juanvargas.mas@gmail.co
 library(tidyverse)
 library(sf)  
 library(leaflet)
+library(skimr)
 
 ```
 
@@ -78,5 +79,66 @@ dataalquiler %>%
         mutate(VALOR_PEROSARG=  103 * price ) %>% 
         group_by(property_type) %>%  
         summarise(prom_precio = max(VALOR_PEROSARG))
+```
+
+# En un grafico observamos la relación entre el precio de alquiler y la cantidad de cuartos ofrecidos
+
+```{r}
+ggplot(data = dataalquiler) + 
+    geom_point(aes(x = bedrooms, y = price)) +
+    labs(title = "Cantidad de cuartos y Precio de alquiler",
+         subtitle = "AirBNB / Ciudad de Buenos Aires",
+         y = "Precio")
+```
+
+# Buscamos mostrar en un grafico facetado la variable precio en relacion a las comodidades
+
+```{r}
+dataalquiler2 <- dataalquiler
+```
+
+
+```{r}
+Precio_comodidades <- dataalquiler2 %>% 
+        select(price, accommodates, room_type, address) %>% 
+  arrange(price) 
+```
+
+
+```{r}
+ggplot(Precio_comodidades)+
+  geom_point(aes(x=price, y=accommodates, color = room_type))  +
+  coord_flip()+
+labs(title = "Precio según cantidad de Prestaciones",
+         subtitle = "Alquileres de AirBNB | año 2017",
+         caption = "Fuente: AirBNB, 2017",
+         x = "Precio",
+         y = "Cantidad de Prestaciones",
+        color= "Tipo de Cuarto") +
+    theme_minimal()
+```
+
+#Mostramos como varian los precios por cada barrio de la CABA
+
+```{r}
+dataalquiler3 <- dataalquiler
+```
+
+
+```{r}
+Barrios_Agrup_AIRBNB <- dataalquiler3 %>% 
+  filter(address %in% c ("Agronomía, Buenos Aires","Almagro, Buenos Aires", "Balvanera, Buenos Aires", "Barracas, Buenos Aires", "Belgrano, Buenos Aires", "Boedo, Buenos Aires", "Caballito, Buenos Aires", "Chacarita, Buenos Aires", "Coghlan, Buenos Aires", "Colegiales, Buenos Aires", "Constitución, Buenos Aires", "Flores, Buenos Aires", "Floresta, Buenos Aires", "La Boca, Buenos Aires", "La Paternal, Buenos Aires", "Liniers, Buenos Aires", "Mataderos, Buenos Aires", "Monte Castro, Buenos Aires", "Monserrat, Buenos Aires", "Nueva Pompeya, Buenos Aires", "Núñez, Buenos Aires", "Palermo, Buenos Aires", "Parque Avellaneda, Buenos Aires", "Parque Chacabuco, Buenos Aires", "Parque Chas, Buenos Aires", "Parque Patricios, Buenos Aires", "Puerto Madero, Buenos Aires", "Recoleta, Buenos Aires", "Retiro, Buenos Aires", "Saavedra, Buenos Aires", "San Cristóbal, Buenos Aires", "San Nicolás, Buenos Aires", "San Telmo, Buenos Aires", "Vélez Sársfield, Buenos Aires", "Versalles, Buenos Aires", "Villa Crespo, Buenos Aires", "Villa del Parque, Buenos Aires", "Villa Devoto, Buenos Aires", "Villa General Mitre, Buenos Aires", "Villa Lugano, Buenos Aires", "Villa Luro, Buenos Aires", "Villa Ortúzar, Buenos Aires", "Villa Pueyrredón, Buenos Aires", "Villa Real, Buenos Aires", "Villa Riachuelo, Buenos Aires",  "Villa Santa Rita", "Villa Soldati, Buenos Aires", "Villa Urquiza, Buenos Aires")) %>% 
+  mutate(Barrios = str_remove(address, ", Buenos Aires")) %>% 
+  group_by(Barrios) %>% 
+  summarise(Prom_Precio = mean(price))
+```
+
+```{r}
+ggplot(data = Barrios_Agrup_AIRBNB) + 
+    geom_point(aes(x = Prom_Precio, y = Barrios)) +
+    labs(title = "Precio promedio de alquiler por Barrio",
+         subtitle = "AirBNB / Ciudad de Buenos Aires",
+         y = "Barrio",
+         x= "Precio Promedio")
 ```
 
