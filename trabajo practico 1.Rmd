@@ -23,7 +23,7 @@ library(skimr)
 #Analizamos la oferta de alquileres de Airbnb para la Ciudad de Buenos Aires en el año 2017
 
 ```{r}
-dataalquiler <- ("airbnb_CABA_07_2017.csv")
+dataalquiler <- read.csv("airbnb_CABA_07_2017.csv" , encoding = "UTF-8", dec = ".")
 ```
 
 #Quiero conocer las columnas y el resumen estadistico del archivo CSV
