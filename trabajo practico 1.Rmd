@@ -14,9 +14,12 @@ use_git_config(user.name = "Juan-arg", user.email = "arq.juanvargas.mas@gmail.co
 
 ```{r}
 library(tidyverse)
+library(sf)  
+library(leaflet)
+
 ```
 
-#Analisamos la oferta de alquileres de Airbnb para la Ciudad de Buenos Aires en el año 2017
+#Analizamos la oferta de alquileres de Airbnb para la Ciudad de Buenos Aires en el año 2017
 
 ```{r}
 dataalquiler <- ("airbnb_CABA_07_2017.csv")
@@ -40,7 +43,40 @@ summary(dataalquiler)
 levels(dataalquiler$room_type)
 ```
 
-#El dataset, las variables TIPO DE CUARTO puede ser: Carto o casa completa, Cuarto Privado o Cuarto Compartido
+#El dataset, las variables TIPO DE CUARTO puede ser: Carto o casa completa, Cuarto Privado o Cuarto Compartido.
     
+#Queremos conocer el valor promedio en pesos argentinos para las tipologias ofertadas en alquiler.    
+```{r}
+dataalquiler %>% 
+        select(price, room_type, property_type, bathrooms) %>% 
+        filter(room_type == "Private room", property_type == "Apartment" | property_type == "House") %>% 
+        arrange(price) %>% 
+        mutate(VALOR_PEROSARG=  103 * price ) %>% 
+        group_by(property_type) %>%  
+        summarise(prom_precio = mean(VALOR_PEROSARG))
+```
 
+#Del mismo modo buscamos el precio mas bajo en pesos argentinos para las tipologas ofertadas en alquiler
+
+```{r}
+dataalquiler %>%select(price, room_type, property_type, bathrooms) %>% 
+        filter(room_type == "Private room", property_type == "Apartment" | property_type == "House") %>% 
+        arrange(price) %>% 
+        mutate(VALOR_PEROSARG=  103 * price ) %>% 
+        group_by(property_type) %>%  
+        summarise(prom_precio = min(VALOR_PEROSARG))
+```
+
+
+#Tambien lo hacemos para el valor maximo 
+
+```{r}
+dataalquiler %>% 
+        select(price, room_type, property_type, bathrooms) %>% 
+        filter(room_type == "Private room", property_type == "Apartment" | property_type == "House") %>% 
+        arrange(price) %>% 
+        mutate(VALOR_PEROSARG=  103 * price ) %>% 
+        group_by(property_type) %>%  
+        summarise(prom_precio = max(VALOR_PEROSARG))
+```
 
